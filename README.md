@@ -1,3 +1,6 @@
-# mermaid 创建
+# mermaid
 
-注册`<Mermaid>`
+vuepress2 mermaid plugin, support this md file
+```mermaid
+XXX
+```

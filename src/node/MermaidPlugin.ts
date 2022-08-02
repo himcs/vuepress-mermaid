@@ -4,21 +4,33 @@ import {hash, path} from '@vuepress/utils'
 const rpc = require('sync-rpc');
 const remote = rpc(__dirname + '/worker.js');
 
-// const backgroundColor = 'white'
+const { optimize } = require('svgo');
+
+
 
 //注册组件
-const mermaidChart = async (tokens, idx, options, env, slf) => {
+const mermaidChart = (tokens, idx, options, env, slf) => {
     try {
         const token = tokens[idx]
-        const key = `mermaid_${hash(idx)}`
         const {content} = token
-        return remote(token)
+        let t =  remote(content)
+        const result = optimize(t,{
+            plugins:[
+                'cleanupAttrs',
+                'mergeStyles',
+                'inlineStyles',
+                'removeStyleElement',
+                'removeScriptElement'
+            ]
+        });
+        const optimizedSvgString = result.data;
+        return `${optimizedSvgString}`;
     } catch ({str, hash}) {
         return `<pre>${str}</pre>`
     }
 }
 
-const MarkdownMermaidPlugin = async (md) => {
+const MarkdownMermaidPlugin = (md) => {
     const temp = md.renderer.rules.fence.bind(md.renderer.rules)
     md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
         const token = tokens[idx]
@@ -35,6 +47,5 @@ export const MermaidPlugin = (): Plugin => ({
     name: 'vuepress-mermaid',
     extendsMarkdown: (md) => {
         md.use(MarkdownMermaidPlugin)
-    },
-    // clientConfigFile: path.resolve(__dirname, '../client/config.js'),
+    }
 })

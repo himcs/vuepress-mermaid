@@ -25,13 +25,12 @@ async function getSvg (definition) {
     console.error(result.message)
   }
   const svg = await page.$eval('#container', (container,) => {
-    // const svg = container.getElementsByTagName?.('svg')?.[0]
-    // svg.style.backgroundColor = backgroundColor
+    const svg = container.getElementsByTagName?.('svg')?.[0]
+    svg.style.backgroundColor = 'white'
     return container.innerHTML
   })
   const svgXML = convertToValidXML(svg)
   await browser.close()
-  console.log(svgXML)
   return svgXML
 }
 

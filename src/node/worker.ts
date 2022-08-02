@@ -10,7 +10,7 @@ const convertToValidXML = html => {
 async function getSvg (definition) {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
-  await page.goto(`file://${path.join(__dirname, '../index.html')}`)
+  await page.goto(`file://${path.join(__dirname, './index.html')}`)
   const result = await page.$eval('#container', (container, definition) => {
     container.textContent = definition
     try {
